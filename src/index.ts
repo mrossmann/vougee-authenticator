@@ -17,16 +17,28 @@ function authorize(execute_lambda: Function, scan_lambda?: Function): Function[]
   console.log('### authorize called ###');
   console.log('--- perform base checks ---');
 
-  function scan(req: any, res: any) {
+  async function scan(req: any, res: any) {
     console.log('### scan called ###');
-    console.log('--- perform scan related checks ---');
-    return scan_lambda?.(req, res);
+    const scan_lambda_json = await scan_lambda?.(req, res);
+
+    console.log('--- json data ---');
+    console.log(scan_lambda_json);
+
+    res.set('Content-Type', 'application/json');
+    res.status(201).json(scan_lambda_json);
+
+    console.log('--- scan end ---');
   }
 
-  function execute(req: any, res: any) {
+  async function execute(req: any, res: any) {
     console.log('### execute called ###');
-    console.log('--- perform execute related checks ---');
-    return execute_lambda(req, res);
+    let execute_lambda_json = execute_lambda(req, res);
+    console.log('--- json data ---');
+    console.log(execute_lambda_json);
+    
+    res.status(200).end();
+
+    console.log('--- execute end ---');
   }
 
   if(!scan_lambda) {
