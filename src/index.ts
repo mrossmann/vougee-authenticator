@@ -1,8 +1,10 @@
+import { Request, Response } from 'express'
+
 /**
  * Prints greeting message from the VouGee Authenticator
  */
-function greeter(): void {
-  console.log("### VouGee Authenticator ###");
+function greeter(): string {
+  return '### VouGee Authenticator ###';
 }
 
 /**
@@ -14,10 +16,8 @@ function greeter(): void {
  * @returns array of methods: execute (mandatory) | scan (optional)
  */
 function authorize(execute_lambda: Function, scan_lambda?: Function): Function[] {
-  console.log('### authorize called ###');
-  console.log('--- perform base checks ---');
 
-  async function scan(req: any, res: any) {
+  async function scan(req: Request, res: Response) {
     console.log('### scan called ###');
     const scan_lambda_json = await scan_lambda?.(req, res);
 
@@ -30,7 +30,7 @@ function authorize(execute_lambda: Function, scan_lambda?: Function): Function[]
     console.log('--- scan end ---');
   }
 
-  async function execute(req: any, res: any) {
+  async function execute(req: Request, res: Response) {
     console.log('### execute called ###');
     let execute_lambda_json = execute_lambda(req, res);
     console.log('--- json data ---');
