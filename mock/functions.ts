@@ -1,15 +1,18 @@
 import { Request, Response } from "express";
 
-function executeLambda(req: Request, res: Response): Object {
+async function executeLambda(req: Request, res: Response): Promise<Object> {
   return {
     execute_lambda_text: 'execute lambda text'
   };
 }
 
-function scanLambda(req: Request, res: Response): Object {
+async function scanLambda(req: Request, res: Response): Promise<Object> {
   return {
     scan_lambda_text: 'scan lambda text'
   };
 }
 
-export { executeLambda, scanLambda };
+export { 
+  executeLambda,
+  scanLambda
+};
