@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import { IWebSocket } from './common';
+import { INonceSocketMap } from './common';
 
 export interface IAuthorizedFunction {
-  (req: Request, res: Response, socket?: IWebSocket): Promise<Object>;
+  (req: Request, res: Response, nonceSocketMap?: INonceSocketMap[]): Promise<Object>;
 };

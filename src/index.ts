@@ -2,39 +2,48 @@ import { Request, Response } from 'express'
 import { IAuthorizedFunction } from './interfaces/functions';
 import { IRequestUrl } from './interfaces/requestUrl';
 import { EProtocol, EAddress, ESubDomain } from './enums/common';
-import { IWebSocket, ISocketMap } from './interfaces/common';
+import { IWebSocket, INonceSocketMap } from './interfaces/common';
+
 
 /**
- * Array storing connected sockets
+ * Initializes an empty nonce-socket map
+ * @returns an empty nonce-socket map {@link INonceSocketMap}
  */
-let socketMap: ISocketMap[] = [];
-
-/**
- * Adds a given socket to the socket map
- * @param nonce The nonce generated for the socket
- * @param socket The socket object used to emit events
- */
-function addSocketToSocketMap(nonce: string, socket: IWebSocket): void {
-  socketMap.push({nonce: nonce, socket: socket});
+function initializeNonceSocketMap(): INonceSocketMap[] {
+  let nonceSocketMap: INonceSocketMap[] = [];
+  return nonceSocketMap;
 }
 
 /**
- * Get a socket from the socket map or undefined if socket object does not exist
- * @param nonce The nonce used to get the socket object
- * @returns a socket object of type IWebSocket
+ * Adds a new entry into the given nonce-socket map
+ * @param nonce The nonce generated for the socket
+ * @param socket The socket object {@link IWebSocket}
+ * @param nonceSocketMap The nonce-socket map {@link INonceSocketMap}
  */
-function getSocketFromSocketMap(nonce: string): IWebSocket | undefined {
-  const mapEntry = socketMap.find(s => s.nonce === nonce);
+function addSocketToNonceSocketMap(nonce: string, socket: IWebSocket, nonceSocketMap: INonceSocketMap[]): void {
+  nonceSocketMap.push({nonce: nonce, socket: socket});
+}
+
+/**
+ * Get a socket object {@link IWebSocket} from the socket map {@link INonceSocketMap} or undefined
+ * if socket object does not exist
+ * @param nonce The nonce used to identify the socket object
+ * @param nonceSocketMap The nonce-socket map to retrieve the socket object 
+ * @returns a socket object or undefined if no socket object is found in the given nonce-socket map
+ */
+function getSocketFromNonceSocketMap(nonce: string, nonceSocketMap: INonceSocketMap[]): IWebSocket | undefined {
+  const mapEntry = nonceSocketMap.find(s => s.nonce === nonce);
   return mapEntry?.socket;
 }
 
 /**
- * Remove a IWebSocket object from the socket map
- * @param nonce The nonce used to identify the IWebSocket object
+ * Remove a socket object {@link IWebSocket} from a given nonce-socket map {@link INonceSocketMap}
+ * @param nonce The nonce used to identify the socket object
+ * @param nonceSocketMap The map to remove the socket object from
  */
-function removeSocketFromSocketMap(nonce: string): void {
-  const mapEntryIndex = socketMap.findIndex(s => s.nonce === nonce);
-  socketMap.splice(mapEntryIndex, 1);
+function removeSocketFromNonceSocketMap(nonce: string, nonceSocketMap: INonceSocketMap[]): void {
+  const mapEntryIndex = nonceSocketMap.findIndex(s => s.nonce === nonce);
+  nonceSocketMap.splice(mapEntryIndex, 1);
 }
 
 /**
@@ -54,19 +63,19 @@ function greeter(): string {
  */
 function authorize(execute_lambda: IAuthorizedFunction, scan_lambda?: IAuthorizedFunction): Function[] {
 
-  async function scan(req: Request, res: Response, socket?: IWebSocket) {
-    const scan_lambda_json = await scan_lambda?.(req, res, socket);
+  async function scan(req: Request, res: Response, nonceSocketMap?: INonceSocketMap[]) {
+    const scan_lambda_json = await scan_lambda?.(req, res, nonceSocketMap);
     res.set('Content-Type', 'application/json');
     res.status(201).json(scan_lambda_json);
   }
 
-  async function execute(req: Request, res: Response, socket?: IWebSocket) {
-    let execute_lambda_json = await execute_lambda(req, res, socket);
+  async function execute(req: Request, res: Response, nonceSocketMap?: INonceSocketMap[]) {
+    let execute_lambda_json = await execute_lambda(req, res, nonceSocketMap);
     console.log('--- execute lampda json ---');
     console.log(execute_lambda_json)
 
     console.log('--- socket map entries ---');
-    console.log(await socketMap.length);
+    console.log(await nonceSocketMap?.length);
     
     res.status(200).end();
   }
@@ -102,9 +111,9 @@ export {
   ESubDomain,
   IAuthorizedFunction,
   IWebSocket,
-  ISocketMap,
-  socketMap,
-  addSocketToSocketMap,
-  getSocketFromSocketMap,
-  removeSocketFromSocketMap
+  INonceSocketMap,
+  initializeNonceSocketMap,
+  addSocketToNonceSocketMap,
+  getSocketFromNonceSocketMap,
+  removeSocketFromNonceSocketMap
 };
