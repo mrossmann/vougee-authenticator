@@ -1,4 +1,3 @@
-
 /**
  * Interface extending the websocket object with an attribute 'id'
  */
