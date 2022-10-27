@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { Request, Response } from 'express';
 import { INonceSocketMap } from './common';
 
 export interface IAuthorizedFunction {
