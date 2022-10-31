@@ -13,3 +13,8 @@ export enum EAddress {
   ETH = "&t=1&tETH",
   BTC = "&t=1&tBTC"
 }
+
+export enum EStatusCode {
+  SUCCESS = 200,
+  
+}

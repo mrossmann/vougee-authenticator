@@ -25,7 +25,7 @@ function authorize(execute_lambda: IAuthorizedFunction, scan_lambda?: IAuthorize
     console.log(execute_lambda_json)
 
     console.log('--- socket map entries ---');
-    console.log(await nonceSocketMap?.length);
+    console.log(nonceSocketMap?.length);
 
     res.status(200).end();
   }
