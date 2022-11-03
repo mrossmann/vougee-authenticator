@@ -16,5 +16,20 @@ export enum EAddress {
 
 export enum EStatusCode {
   SUCCESS = 200,
-  
+  RETRY = 201,
+  NONCE_MISSING = 400,
+  SESSION_NOT_FOUND = 403,
+  UNKNOWN_ADDRESS = 405,
+  ALREADY_CONNECTED = 406,
+  NONCE_SALT_NOT_FOUND = 410
+}
+
+export enum EStatusMessage {
+  SUCCESS = 'success',
+  RETRY = 'retry',
+  NONCE_MISSING = 'nonce is missing',
+  SESSION_NOT_FOUND = 'session could not be found',
+  UNKNOWN_ADDRESS = 'unknown address',
+  ALREADY_CONNECTED = 'device already connected',
+  NONCE_SALT_NOT_FOUND = 'nonce/salt entry does not exist'
 }
