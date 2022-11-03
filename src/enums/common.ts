@@ -21,7 +21,6 @@ export enum EStatusCode {
   SESSION_NOT_FOUND = 403,
   UNKNOWN_ADDRESS = 405,
   ALREADY_CONNECTED = 406,
-  NONCE_SALT_NOT_FOUND = 410
 }
 
 export enum EStatusMessage {
@@ -31,5 +30,12 @@ export enum EStatusMessage {
   SESSION_NOT_FOUND = 'session could not be found',
   UNKNOWN_ADDRESS = 'unknown address',
   ALREADY_CONNECTED = 'device already connected',
-  NONCE_SALT_NOT_FOUND = 'nonce/salt entry does not exist'
+}
+
+export enum EGuardStatusCode {
+  NONCE_SALT_MISSING = 410
+}
+
+export enum EGuardStatusMessage {
+  NONCE_SALT_MISSING = 'nonce/salt entry does not exist'
 }

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { IAuthorizedFunction } from '../interfaces/functions';
 import { INonceSocket } from '../interfaces/common';
-import { EStatusCode, EStatusMessage } from '../enums/common';
+import { EGuardStatusCode, EGuardStatusMessage, EStatusCode, EStatusMessage } from '../enums/common';
 import { Guard } from './guard';
 
 
@@ -27,7 +27,6 @@ function authorize(execute_lambda: IAuthorizedFunction, scan_lambda?: IAuthorize
 
     res.set('Content-Type', 'application/json');
     res.status(200).json(scan_lambda_json);
-
   }
 
   async function execute(req: Request, res: Response, nonceSocketMap?: INonceSocket[]): Promise<void> {
@@ -37,7 +36,7 @@ function authorize(execute_lambda: IAuthorizedFunction, scan_lambda?: IAuthorize
     if (!nonce) { res.status(EStatusCode.NONCE_MISSING).json(EStatusMessage.NONCE_MISSING) }
 
     if (!Guard.getInstance().checkNonceSaltMapEntryExists(nonce, salt)) {
-      res.status(EStatusCode.NONCE_SALT_NOT_FOUND).json(EStatusMessage.NONCE_SALT_NOT_FOUND)
+      res.status(EGuardStatusCode.NONCE_SALT_MISSING).json(EGuardStatusMessage.NONCE_SALT_MISSING)
     }
 
     let execute_lambda_json = await execute_lambda(req, res, nonceSocketMap);
